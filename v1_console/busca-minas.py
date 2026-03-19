@@ -82,8 +82,8 @@ class ArmadorCasillas:
         self.casillas = casillas
         
     def armar_casillas(self):
-        bombas_lista = bombas.crear_bombas(self.multiplicador)
-        casillas_lista = casillas.crear_casillas(self.multiplicador, bombas_lista)
+        bombas_lista = self.bombas.crear_bombas(self.multiplicador)
+        casillas_lista = self.casillas.crear_casillas(self.multiplicador, bombas_lista)
         return casillas_lista
 
 #Creacion de objetos y armado de las casillas
