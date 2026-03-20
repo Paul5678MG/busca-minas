@@ -80,7 +80,6 @@ def main(page: ft.Page):
         estado["multiplicador"] = e.control.data
 
         e.control.bgcolor = "#00DDFF"
-        e.control.update()
 
         estado["ultimo_btn_tamaño"] = e.control
         mensaje_error.visible = False
@@ -92,8 +91,9 @@ def main(page: ft.Page):
         e.control.content = ft.Text(casilla_click.revelar(), size=20)
         
         if casilla_click.es_bomba():
-            mensaje_error.visible = True
+            btn_retirar.disabled = True
             btn_retirar.visible = False
+            mensaje_error.visible = True
             e.control.bgcolor = "#FF2E63"
             mensaje_error.value = "¡BOOM! GAME OVER 💀"
             mensaje_error.color = "#FF2E63"
@@ -116,7 +116,6 @@ def main(page: ft.Page):
                     c.bgcolor = "#4A8A89"
                 c.opacity = 0.2
                 c.disabled = True                
-                page.update()
         else:
             estado["gemas_obtenidas"] += 1
             btn_retirar.visible = True
@@ -155,7 +154,6 @@ def main(page: ft.Page):
                 c.bgcolor = "#4A8A89"
             c.opacity = 0.2
             c.disabled = True                
-            page.update()
         btn_retirar.disabled = True
         mensaje_ganancia.visible = True
         mensaje_ganancia.value = f"GANASTE {estado['gemas_obtenidas']} 💎"
@@ -195,6 +193,7 @@ def main(page: ft.Page):
             )
         
         titulo.size = 45
+        mensaje_aviso.visible = True
         mensaje_aviso.value = "AVISO: ¡Aproximadamente 1/3 del tablero esta lleno de granadas!🔥"
         contenedor_tablero.controls = [grid] # Metemos el grid al contenedor
         page.update(titulo)
@@ -211,6 +210,7 @@ def main(page: ft.Page):
         alignment=ft.MainAxisAlignment.CENTER
     )
     
+    #Boton para retirar ganancias
     btn_retirar = ft.ElevatedButton(
         content=ft.Text("RETIRARSE", color="white", size=14, weight="bold"),
         bgcolor="#00FF08",  
@@ -223,6 +223,7 @@ def main(page: ft.Page):
         visible=False
     )
     
+    #Boton para empezar
     btn_empezar = ft.ElevatedButton(
         content=ft.Text("JUGAR", color="white", size=14, weight="bold"),
         bgcolor="#1E1C4D",  
@@ -234,6 +235,7 @@ def main(page: ft.Page):
         on_click=jugar
     )
     
+    #Agregando objetos al lienzo
     page.add(titulo, mensaje_aviso, ft.Divider(height=20, color="dark-blue"),contenedor_tablero, ft.Divider(height=20, color="dark-blue"), fila_tamaños, mensaje_ganancia, mensaje_error, btn_retirar, btn_empezar)
 
 #Ejecutar la aplicación
