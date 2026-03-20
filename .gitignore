@@ -1,2 +1,6 @@
-tempCodeRunnerFile.py
 tempCodeRunnerFile.python
+tempCodeRunnerFile.py
+__pycache__/
+build/
+*.spec
+dist/
