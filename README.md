@@ -17,11 +17,17 @@ En la segunda versión, el juego dio el salto a una interfaz visual oscura y mod
 * **Dificultad Dinámica:** Selección de tamaño de tablero (3x3, 5x5, 7x7, 9x9) con generación aleatoria de granadas (aprox. 1/3 del tablero).
 * **Feedback Visual:** Animaciones de opacidad y cambios de estado al ganar o perder.
 
+### 🔹 Versión 3: Despliegue Web (Actual)
+El estado actual del proyecto, adaptando la potencia de Python al navegador.
+* **Web-Ready:** Optimización de assets y rutas para funcionamiento en entornos web.
+* **Despliegue Continuo:** Alojado en **Render** mediante contenedores/estáticos.
+
 ## 🛠️ Tecnologías Utilizadas
 * **Lenguaje:** Python 3.x
 * **Lógica:** Clases abstractas (`abc`), manejo de excepciones y biblioteca `random`.
 * **Framework UI:** [Flet](https://flet.dev/) (Basado en Flutter).
 * **Distribución:** Empaquetado nativo para Windows (.exe) con icono personalizado.
+* **Deployment & Hosting:** Render (PaaS).
 
 ## 🎮 Cómo Jugar
 1.  **Selecciona el tamaño** del tablero en la parte inferior.
@@ -31,6 +37,10 @@ En la segunda versión, el juego dio el salto a una interfaz visual oscura y mod
 5.  Puedes presionar **"RETIRARSE"** en cualquier momento para asegurar tu botín.
 
 ## 📦 Instalación y Ejecución
+Versión Web (Recomendado)
+No necesitas instalar nada. Juega directamente en tu navegador:
+🚀 **[Jugar Buscaminas Web](https://busca-minas.onrender.com/)**
+
 Si tienes Python instalado:
 ```bash
 pip install flet
