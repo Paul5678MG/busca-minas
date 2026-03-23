@@ -47,4 +47,6 @@ pip install flet
 python v2_flet/busca-minas-v2.py
 
 ---
+Nota: Se contemplan futuras actualizaciones orientadas a la optimización del rendimiento, el refinamiento de las mecánicas de juego y más.
+
 Desarrollado con ❤️ por Paul | 2026

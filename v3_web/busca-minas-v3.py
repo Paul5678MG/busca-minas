@@ -5,9 +5,6 @@ import flet as ft
 
 #Interfaz para las casillas
 class CasillaMolde(ABC):
-    def __init__(self, numero):
-        self.numero = numero
-        
     @abstractmethod
     def revelar(self):
         pass
@@ -15,14 +12,32 @@ class CasillaMolde(ABC):
     @abstractmethod
     def es_bomba(self):
         pass
+    
+    @abstractmethod
+    def probabilidad(self):
+        pass
 
-#Casilla sin bomba
-class CasillaNormal(CasillaMolde):
+#Casilla con gema
+class CasillaDiamante(CasillaMolde):
     def revelar(self):
         return "💎"
     
     def es_bomba(self):
         return False
+    
+    def probabilidad(self):
+        return 0.65
+
+#Casilla con dinero
+class CasillaDinero(CasillaMolde):
+    def revelar(self):
+        return "💸"
+    
+    def es_bomba(self):
+        return False
+    
+    def probabilidad(self):
+        return 0.1
 
 #Casilla con bomba
 class CasillaBomba(CasillaMolde):
@@ -31,21 +46,27 @@ class CasillaBomba(CasillaMolde):
     
     def es_bomba(self):
         return True
+    
+    def probabilidad(self):
+        return 0.25
 
 class GeneradorTablero:
-    def __init__(self, multiplicador):
+    def __init__(self, multiplicador, lista_recompensas):
         self.multiplicador = multiplicador
         self.cantidad = multiplicador * multiplicador
+        self.lista_recompensas = list(lista_recompensas)
 
-    def crear_lista_casillas(self):
-        indices_bombas = random.sample(range(1, self.cantidad + 1), self.cantidad // 3)
+    def generar_casilla(self):
+        lista_resultado = list()
+        probabilidades = [r.probabilidad() for r in self.lista_recompensas]
         
-        lista_resultado = []
-        for i in range(1, self.cantidad + 1):
-            if i in indices_bombas:
-                lista_resultado.append(CasillaBomba(i))
-            else:
-                lista_resultado.append(CasillaNormal(i))
+        for _ in range(1, self.cantidad+1):
+            resultado = random.choices(
+                population = self.lista_recompensas,
+                weights= probabilidades,
+                k=1
+            )[0]
+            lista_resultado.append(type(resultado)())
         return lista_resultado
 
 #Función principal, page lienzo en blanco
@@ -60,10 +81,11 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     
     estado = {
+        "casillas_tipos": [CasillaDiamante(), CasillaDinero(), CasillaBomba()],
         "multiplicador": None,
         "ultimo_btn_tamaño": None,
         "casillas": [],
-        "gemas_obtenidas": 0
+        "recompensas_obtenidas": dict()
     }
     
     #Funcion para seleccionar el tamaño de las cuadriculas
@@ -121,7 +143,7 @@ def main(page: ft.Page):
                 c.opacity = 0.2
                 c.disabled = True                
         else:
-            estado["gemas_obtenidas"] += 1
+            estado["recompensas_obtenidas"][casilla_click.revelar()] = estado["recompensas_obtenidas"].get(casilla_click.revelar(),0) + 1
             btn_retirar.visible = True
             e.control.bgcolor = "#08D9D6"
             e.control.disabled = True
@@ -160,11 +182,15 @@ def main(page: ft.Page):
             c.disabled = True                
         btn_retirar.disabled = True
         mensaje_ganancia.visible = True
-        mensaje_ganancia.value = f"GANASTE {estado['gemas_obtenidas']} 💎"
-        page.update()
+        mensaje = "GANASTE:"
+        for c in estado["casillas_tipos"]:
+            if c.revelar() in estado["recompensas_obtenidas"]:
+                mensaje += f" {estado['recompensas_obtenidas'].get(c.revelar(),0)} {c.revelar()}"
+        mensaje_ganancia.value = mensaje
     
     #Funcion para crear las cuadriculas
     def jugar():
+        estado["recompensas_obtenidas"] = dict()
         btn_retirar.disabled = False
         btn_retirar.visible = False
         mensaje_ganancia.visible = False
@@ -173,13 +199,13 @@ def main(page: ft.Page):
         if not multiplicador:
             mensaje_error.visible = True
             mensaje_error.value = "⚠️ Selecciona un tamaño antes de empezar"
-            page.update()
             return
         mensaje_error.visible = False
         page.update()
         
-        generador_tablero = GeneradorTablero(estado["multiplicador"])
-        estado["casillas"] = generador_tablero.crear_lista_casillas()
+        recompensas = [CasillaDiamante(), CasillaDinero(), CasillaBomba()]
+        generador_tablero = GeneradorTablero(estado["multiplicador"], recompensas)
+        estado["casillas"] = generador_tablero.generar_casilla()
         
         grid = ft.GridView(runs_count=multiplicador, spacing=5, run_spacing=5, width=300)
         
@@ -198,7 +224,7 @@ def main(page: ft.Page):
         
         titulo.size = 45
         mensaje_aviso.visible = True
-        mensaje_aviso.value = "AVISO: ¡Aproximadamente 1/3 del tablero esta lleno de granadas!🔥"
+        mensaje_aviso.value = "⚠️¡CUIDADO! 1 de cada 4 casillas es una GRANADA 💥"
         contenedor_tablero.controls = [grid] # Metemos el grid al contenedor
         page.update(titulo)
     
