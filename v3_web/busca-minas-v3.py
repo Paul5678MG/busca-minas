@@ -96,7 +96,6 @@ def main(page: ft.Page):
             estado["multiplicador"] = None
             estado["ultimo_btn_tamaño"] = None
             mensaje_error.visible = False
-            page.update()
             return
         
         if estado["ultimo_btn_tamaño"]:
@@ -104,12 +103,12 @@ def main(page: ft.Page):
             estado["ultimo_btn_tamaño"].update()
             
         estado["multiplicador"] = e.control.data
-
         e.control.bgcolor = "#00DDFF"
-
+        e.control.update()
+        
         estado["ultimo_btn_tamaño"] = e.control
         mensaje_error.visible = False
-        page.update()
+        mensaje_error.update()
     
     def revelar_casilla_click(e):
         casilla_click = e.control.data
@@ -141,13 +140,15 @@ def main(page: ft.Page):
                 else:
                     c.bgcolor = "#4A8A89"
                 c.opacity = 0.2
-                c.disabled = True                
+                c.disabled = True     
+            page.update()
         else:
             estado["recompensas_obtenidas"][casilla_click.revelar()] = estado["recompensas_obtenidas"].get(casilla_click.revelar(),0) + 1
             btn_retirar.visible = True
             e.control.bgcolor = "#08D9D6"
             e.control.disabled = True
-            page.update()
+            e.control.update() 
+            btn_retirar.update()
     
     #Mensaje para visualizar ganancia
     mensaje_ganancia = ft.Text("", weight="bold", color="#00FF08",visible=False)
@@ -199,9 +200,9 @@ def main(page: ft.Page):
         if not multiplicador:
             mensaje_error.visible = True
             mensaje_error.value = "⚠️ Selecciona un tamaño antes de empezar"
+            mensaje_error.update()
             return
         mensaje_error.visible = False
-        page.update()
         
         recompensas = [CasillaDiamante(), CasillaDinero(), CasillaBomba()]
         generador_tablero = GeneradorTablero(estado["multiplicador"], recompensas)
